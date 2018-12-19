@@ -68,9 +68,9 @@ var GameScreen = {
         
         this.pl = game.add.sprite(710, 210, 'pl');
         
-        this.ts = game.add.sprite(410, 290, 'pl');
+        this.ts = game.add.sprite(410, 190, 'pl');
         
-        this.io = game.add.sprite(95, 210, 'pl');
+        this.io = game.add.sprite(95, 110, 'pl');
         
         this.la = game.add.sprite(95, 380, 'pl');
         
