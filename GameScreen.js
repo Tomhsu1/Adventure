@@ -25,7 +25,6 @@ var GameScreen = {
     },
     create: function() {
        
-        
         //Keyboard
         this.wasd = {
             up: game.input.keyboard.addKey(Phaser.Keyboard.W),
@@ -34,19 +33,19 @@ var GameScreen = {
             right: game.input.keyboard.addKey(Phaser.Keyboard.D)
               
          };
-        
-        background = game.add.tileSprite(0, 0, 1000, 800, 'bg');
-        floors = game.add.tileSprite(0, 548, 1000, game.width, 'floor');
+        game.world.setBounds(0,0,2000,0);
+        background = game.add.tileSprite(0, 0, 2000, 800, 'bg');
+        floors = game.add.tileSprite(0, 548, 2000, game.width, 'floor');
         floors.physicsType = Phaser.SPRITE;
         game.physics.arcade.enable(floors);
         
-        floors.collideWorldBounds = true;
+//        floors.collideWorldBounds = true;
         floors.body.immovable = true;
         floors.body.allowGravity = false;
         
         this.jumpTimer = 0;
         this.mroJumpTimer = 0;
-        game.physics.startSystem(Phaser.Physics.ARCADE);
+//        game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 2000;
         
         game.input.onDown.add(this.createBullet, this);
@@ -89,39 +88,39 @@ var GameScreen = {
 
         this.mro.animations.play('walk2', 8, true);
         
-        this.grg.body.collideWorldBounds = true;
-        this.mro.body.collideWorldBounds = true;
+//        this.grg.body.collideWorldBounds = true;
+//        this.mro.body.collideWorldBounds = true;
         
         this.pl.body.immovable = true;
-        this.pl.body.collideWorldBounds = true;
+//        this.pl.body.collideWorldBounds = true;
         this.pl.height = 30;
         this.pl.width = 200;
         this.pl.body.allowGravity = false;
         this.pl.body.checkCollision.down = false;
 
         this.ts.body.immovable = true;
-        this.ts.body.collideWorldBounds = true;
+//        this.ts.body.collideWorldBounds = true;
         this.ts.height = 30;
         this.ts.width = 200;
         this.ts.body.allowGravity = false;
         this.ts.body.checkCollision.down = false;
         
         this.io.body.immovable = true;
-        this.io.body.collideWorldBounds = true;
+//        this.io.body.collideWorldBounds = true;
         this.io.height = 30;
         this.io.width = 200;
         this.io.body.allowGravity = false;
         this.io.body.checkCollision.down = false;
         
         this.la.body.immovable = true;
-        this.la.body.collideWorldBounds = true;
+//        this.la.body.collideWorldBounds = true;
         this.la.height = 30;
         this.la.width = 200;
         this.la.body.allowGravity = false;
         this.la.body.checkCollision.down = false;
         
         this.ru.body.immovable = true;
-        this.ru.body.collideWorldBounds = true;
+//        this.ru.body.collideWorldBounds = true;
         this.ru.height = 30;
         this.ru.width = 200;
         this.ru.body.allowGravity = false;
@@ -145,6 +144,8 @@ var GameScreen = {
         game.physics.arcade.collide(floors, this.mro);
         game.physics.arcade.collide(this.platforms, this.grg);
         game.physics.arcade.collide(this.platforms, this.mro);
+        
+        game.camera.follow(this.grg);
 
 //        game.physics.arcade.collide(this.grg, this.mro, this.lit, null, this);
         
@@ -160,24 +161,16 @@ var GameScreen = {
         
         game.physics.arcade.collide (mbls, bullets, this.tall, null, this);
         
-        if (charaFacingRight) {
-        background.tilePosition.x -= 2;
-        floors.tilePosition.x -= 2;
-        } else {
-            background.tilePosition.x += 2;
-        floors.tilePosition.x += 2;
-        }
-        
         if (this.wasd.right.isDown) {
             charaFacingRight = true;
-            this.grg.body.velocity.x = 350;
+           this.grg.body.velocity.x = 250;
             this.grg.anchor.setTo(.5,1);
             this.grg.scale.x = 1;
         } else if (this.wasd.left.isDown) { //if the left arrow is pressed, move to the left
             charaFacingRight = false;
             this.grg.anchor.setTo(.5,1);
             this.grg.scale.x = -1;
-            this.grg.body.velocity.x = -350;
+            this.grg.body.velocity.x = -250;
         } else if (this.wasd.down.isDown) { //if the down arrow is pressed, move downwards
             this.grg.body.velocity.y = 350;
             this.mro.body.velocity.y = 350;
@@ -255,7 +248,7 @@ var GameScreen = {
             //  Our bullet group
                 bullets.setAll('anchor.x', 0.5);
                 bullets.setAll('anchor.y', 0.5);
-                bullets.setAll('outOfBoundsKill', true);
+//                bullets.setAll('outOfBoundsKill', true);
                 bullets.setAll('checkWorldBounds', true);
                 game.physics.arcade.moveToPointer(temp, 300);
         }
