@@ -1,6 +1,7 @@
 var isFacingRight = true;
 var isFacingRight2 = true;
 var charaFacingRight = true;
+var bunnyRight = true;
 var mrokill = true;
 var counter = 9;
 
@@ -22,6 +23,8 @@ var GameScreen = {
         game.load.image('pl', 'assets/images/platforms.png', 100, 100, 45);
         game.load.image('bg', 'assets/images/background.png', 1000, 100);
         game.load.image('mbl', 'assets/images/mario_bullet.png');
+        game.load.spritesheet('bunny', 'assets/images/bunny_sprite.png', 31, 50, 4);
+        game.load.spritesheet('portal', 'assets/images/portal.png', 80, 81, 3);
     },
     create: function() {
        
@@ -33,7 +36,7 @@ var GameScreen = {
             right: game.input.keyboard.addKey(Phaser.Keyboard.D)
               
          };
-        game.world.setBounds(0,0,2000,0);
+        game.world.setBounds(0,0,2000,580);
         background = game.add.tileSprite(0, 0, 2000, 800, 'bg');
         floors = game.add.tileSprite(0, 548, 2000, game.width, 'floor');
         floors.physicsType = Phaser.SPRITE;
@@ -57,14 +60,26 @@ var GameScreen = {
         mbls.enableBody = true;
         
         this.grg = game.add.sprite(0, 10, 'gr');
-
         game.physics.arcade.enable(this.grg);
         this.grg.animations.add('walk');
         this.grg.animations.play('walk', 10, true);
         
+        this.bunny = game.add.sprite(100, 100, 'bunny');
+        game.physics.arcade.enable(this.bunny);
+        this.bunny.animations.add('walk3');
+        this.bunny.animations.play('walk3', 4, true);
+        this.bunny.scale.setTo(1, 1.5);
+        
+        this.portal = game.add.sprite(1500, 400, 'portal');
+        game.physics.arcade.enable(this.portal);
+        this.portal.animations.add('anim');
+        this.portal.animations.play('anim', 3, true);
+        this.portal.scale.setTo(1.5, 1.5);
+        
         this.mro = game.add.sprite(1000, 400, 'mo');
         game.physics.arcade.enable(this.mro);
         this.mro.body.allowGravity = true;
+        this.mro.scale.setTo(1, 2);
         
         this.pl = game.add.sprite(710, 210, 'pl');
         
@@ -88,8 +103,9 @@ var GameScreen = {
 
         this.mro.animations.play('walk2', 8, true);
         
-//        this.grg.body.collideWorldBounds = true;
-//        this.mro.body.collideWorldBounds = true;
+        this.grg.body.collideWorldBounds = true;
+        this.mro.body.collideWorldBounds = true;
+        this.bunny.body.collideWorldBounds = true;
         
         this.pl.body.immovable = true;
 //        this.pl.body.collideWorldBounds = true;
@@ -142,22 +158,24 @@ var GameScreen = {
         time++;
         game.physics.arcade.collide(floors, this.grg);
         game.physics.arcade.collide(floors, this.mro);
+        game.physics.arcade.collide(floors, this.bunny);
+        game.physics.arcade.collide(floors, this.portal);
+
+
         game.physics.arcade.collide(this.platforms, this.grg);
         game.physics.arcade.collide(this.platforms, this.mro);
         
         game.camera.follow(this.grg);
-
-//        game.physics.arcade.collide(this.grg, this.mro, this.lit, null, this);
         
-        game.physics.arcade.collide(this.grg, [this.mro, this.mgm], this.endGame, null, this);
+//        game.physics.arcade.collide(this.grg, [this.mro, this.mgm], this.endGame, null, this);
+//
+//        
+//        game.physics.arcade.collide(this.grg, [this.mro], this.endGame, null, this);
 
+
+//        game.physics.arcade.collide(bullets, this.mro, this.hit, null, this);
         
-        game.physics.arcade.collide(this.grg, [this.mro], this.endGame, null, this);
-
-
-        game.physics.arcade.collide(bullets, this.mro, this.hit, null, this);
-        
-        game.physics.arcade.collide(mbls, this.grg, this.destroy, null, this);
+//        game.physics.arcade.collide(mbls, this.grg, this.destroy, null, this);
         
         game.physics.arcade.collide (mbls, bullets, this.tall, null, this);
         
@@ -178,19 +196,40 @@ var GameScreen = {
             this.grg.body.velocity.x = 0;
         }
         
+        game.physics.arcade.collide(this.grg, this.portal, this.winGame, null, this);
+        
         if (this.mro.body.x <= game.world.width - 50 && isFacingRight) {
             this.mro.body.velocity.x = 400;//is going to right of screen going this fast
             this.mro.anchor.setTo(.5,1);//will flip to the left
             
             this.mro.scale.x = 1;//will flip to the left
+
         } else if (this.mro.body.x !== 0){//makes mario flip
             isFacingRight = false;//causes him to go left
             this.mro.anchor.setTo(.5,1);//will flip to the right
             this.mro.scale.x = -1;//will flip to the right
             this.mro.body.velocity.x = -400;//is going to the left of the screen going this fast
+            
+            
         } else {
             isFacingRight = true;
         }
+        
+        if (this.bunny.body.x <= game.world.width - 50 && bunnyRight) {
+            this.bunny.body.velocity.x = 200;//is going to right of screen going this fast
+            this.bunny.anchor.setTo(.5,1);//will flip to the left
+            
+            this.bunny.scale.x = 1;//will flip to the left
+
+        } else if (this.mro.body.x !== 0){//makes mario flip
+            bunnyRight = false;//causes him to go left
+            this.bunny.anchor.setTo(.5,1);//will flip to the right
+            this.bunny.scale.x = -1;//will flip to the right
+            this.bunny.body.velocity.x = -200;//is going to the left of the screen going this fast   
+        } else {
+            bunnyRight = true;
+        }
+                    
         
         if (this.wasd.up.isDown && game.time.now > this.jumpTimer) {
             
