@@ -27,6 +27,7 @@ var GameScreen = {
         game.load.spritesheet('portal', 'assets/images/portal.png', 80, 81, 3);
         game.load.spritesheet('trees', 'assets/images/trees.png', 58, 51, 1);
         game.load.image('switch', 'assets/images/p_switch.png', 25, 30);
+        game.load.image('pressedSwitch', 'assets/images/pressed_switch.png', 25, 30);
     },
     create: function() {
        
@@ -330,7 +331,12 @@ var GameScreen = {
     
     activate: function(pSwitch, bullets) {
         console.log("P Switch Activated");
-        
+        this.pressed = game.add.sprite(2000, 0, 'pressedSwitch', 0);
+        game.physics.arcade.enable(this.pressed);
+        this.pressed.body.immovable = true;
+        this.pressed.body.allowGravity = false;
+        this.pressed.scale.setTo(0.1, 0.1);
+        this.switch.kill()
     },
     
     hit: function(chara, bullet) {
