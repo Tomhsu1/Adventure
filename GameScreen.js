@@ -23,8 +23,10 @@ var GameScreen = {
         game.load.image('pl', 'assets/images/platforms.png', 100, 100, 45);
         game.load.image('bg', 'assets/images/background.png', 1000, 100);
         game.load.image('mbl', 'assets/images/mario_bullet.png');
-        game.load.spritesheet('bunny', 'assets/images/bunny_sprite.png', 31, 50, 4);
+        game.load.spritesheet('bunny', 'assets/images/bunny_sprite.png', 31, 45, 4);
         game.load.spritesheet('portal', 'assets/images/portal.png', 80, 81, 3);
+        game.load.spritesheet('trees', 'assets/images/trees.png', 58, 51, 1);
+        game.load.image('switch', 'assets/images/p_switch.png', 25, 30);
     },
     create: function() {
        
@@ -36,9 +38,9 @@ var GameScreen = {
             right: game.input.keyboard.addKey(Phaser.Keyboard.D)
               
          };
-        game.world.setBounds(0,0,2000,580);
-        background = game.add.tileSprite(0, 0, 2000, 800, 'bg');
-        floors = game.add.tileSprite(0, 548, 2000, game.width, 'floor');
+        game.world.setBounds(0,0,4000,580);
+        background = game.add.tileSprite(0, 0, 4000, 800, 'bg');
+        floors = game.add.tileSprite(0, 548, 4000, game.width, 'floor');
         floors.physicsType = Phaser.SPRITE;
         game.physics.arcade.enable(floors);
         
@@ -50,6 +52,32 @@ var GameScreen = {
         this.mroJumpTimer = 0;
 //        game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 2000;
+        
+        this.tree1 = game.add.sprite(Math.random() * 2000 + 900, 380, 'trees');
+        this.tree2 = game.add.sprite(Math.random() * 1500 + 600, 380, 'trees');
+        this.tree3 = game.add.sprite(Math.random() * 1000 + 1000, 380, 'trees');
+        this.tree4 = game.add.sprite(Math.random() * 500 + 320, 380, 'trees');
+        this.tree5 = game.add.sprite(Math.random() * 1800 + 600, 380, 'trees');
+        this.tree6 = game.add.sprite(Math.random() * 3000 + 300, 380, 'trees');
+        this.tree7 = game.add.sprite(Math.random() * 2500 + 400, 380, 'trees');
+        
+        this.trees = game.add.group();
+        this.trees.add(this.tree1);
+        this.trees.add(this.tree2);
+        this.trees.add(this.tree3);
+        this.trees.add(this.tree4);
+        this.trees.add(this.tree5);
+        this.trees.add(this.tree6);
+        this.trees.add(this.tree7);
+
+        this.tree1.scale.setTo(2,2);
+        this.tree2.scale.setTo(2,2);
+        this.tree3.scale.setTo(2,2);
+        this.tree4.scale.setTo(2,2);
+        this.tree5.scale.setTo(2,2);
+        this.tree6.scale.setTo(2,2);
+        this.tree7.scale.setTo(2,2);
+        game.physics.arcade.enable(this.trees);
         
         game.input.onDown.add(this.createBullet, this);
              
@@ -70,7 +98,7 @@ var GameScreen = {
         this.bunny.animations.play('walk3', 4, true);
         this.bunny.scale.setTo(1, 1.5);
         
-        this.portal = game.add.sprite(1500, 400, 'portal');
+        this.portal = game.add.sprite(3800, 400, 'portal');
         game.physics.arcade.enable(this.portal);
         this.portal.animations.add('anim');
         this.portal.animations.play('anim', 3, true);
@@ -81,16 +109,15 @@ var GameScreen = {
         this.mro.body.allowGravity = true;
         this.mro.scale.setTo(1, 2);
         
-        this.pl = game.add.sprite(710, 210, 'pl');
+        this.pl = game.add.sprite(Math.random() * 2000 + 300, 380, 'pl');
         
-        this.ts = game.add.sprite(410, 190, 'pl');
+        this.ts = game.add.sprite(Math.random() * 1500 + 200, 380, 'pl');
         
-        this.io = game.add.sprite(95, 110, 'pl');
+        this.io = game.add.sprite(Math.random() * 1000, 380, 'pl');
         
-        this.la = game.add.sprite(95, 380, 'pl');
+        this.la = game.add.sprite(Math.random() * 2500, 380, 'pl');
         
-        
-        this.ru = game.add.sprite(710, 380, 'pl');
+        this.ru = game.add.sprite(Math.random() * 3000, 380, 'pl');
         
         game.physics.arcade.enable(this.mro);
         game.physics.arcade.enable(this.pl);
@@ -150,8 +177,14 @@ var GameScreen = {
         this.platforms.add(this.io);
         this.platforms.add(this.la);
         this.platforms.add(this.ru);
-
-
+        
+        pSwitch = game.add.group();
+        
+        this.switch = game.add.sprite(2000, 0, 'switch', 0, pSwitch);
+        game.physics.arcade.enable(this.switch);
+        this.switch.body.immovable = true;
+        this.switch.body.allowGravity = false;
+        this.switch.scale.setTo(0.1, 0.1);
     },
     
     update: function() {
@@ -160,12 +193,14 @@ var GameScreen = {
         game.physics.arcade.collide(floors, this.mro);
         game.physics.arcade.collide(floors, this.bunny);
         game.physics.arcade.collide(floors, this.portal);
-
+        game.physics.arcade.collide(floors, this.trees);
 
         game.physics.arcade.collide(this.platforms, this.grg);
         game.physics.arcade.collide(this.platforms, this.mro);
         
         game.camera.follow(this.grg);
+        
+        game.physics.arcade.collide(pSwitch, bullets, this.activate, null, this);
         
 //        game.physics.arcade.collide(this.grg, [this.mro, this.mgm], this.endGame, null, this);
 //
@@ -177,7 +212,7 @@ var GameScreen = {
         
 //        game.physics.arcade.collide(mbls, this.grg, this.destroy, null, this);
         
-        game.physics.arcade.collide (mbls, bullets, this.tall, null, this);
+        game.physics.arcade.collide(mbls, bullets, this.tall, null, this);
         
         if (this.wasd.right.isDown) {
             charaFacingRight = true;
@@ -291,6 +326,11 @@ var GameScreen = {
                 bullets.setAll('checkWorldBounds', true);
                 game.physics.arcade.moveToPointer(temp, 300);
         }
+    },
+    
+    activate: function(pSwitch, bullets) {
+        console.log("P Switch Activated");
+        
     },
     
     hit: function(chara, bullet) {

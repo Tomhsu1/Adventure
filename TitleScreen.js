@@ -16,8 +16,8 @@ var TitleScreen = {
     //it is where we set up the basics of the game, essentially what it will look like when we start the game
     create: function () {
         this.bg = game.add.image(0,0, 'bg');
-        this.bg.width = game.world.width;
-        this.bg.height = game.world.height;
+        this.bg.width = 1000;
+        this.bg.height = 580;
         //adds an image with image 'logo' at (290, 100)
         this.chr = this.add.image(800, 279, 'chr');
         this.chr.width = 70;

@@ -55,7 +55,7 @@ var WinScreen = {
         game.physics.arcade.enable(this.tr);
         this.tr.body.allowGravity = false;
         
-                this.text = game.add.text(game.world.centerX-190, game.world.centerY-60, 'YOU WIN! GET YOUR PRIZE HERE ');
+        this.text = game.add.text(190, 60, 'YOU WIN! GET YOUR PRIZE HERE ');
 
 
 
