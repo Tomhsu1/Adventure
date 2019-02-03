@@ -28,6 +28,7 @@ var GameScreen = {
         game.load.spritesheet('trees', 'assets/images/trees.png', 58, 51, 1);
         game.load.image('switch', 'assets/images/p_switch.png', 25, 30);
         game.load.image('pressedSwitch', 'assets/images/pressed_switch.png', 25, 30);
+        game.load.image('cave', 'assets/images/cave_entrance.png', 30, 30);
     },
     create: function() {
        
@@ -37,8 +38,11 @@ var GameScreen = {
             down: game.input.keyboard.addKey(Phaser.Keyboard.S),
             left: game.input.keyboard.addKey(Phaser.Keyboard.A),
             right: game.input.keyboard.addKey(Phaser.Keyboard.D)
-              
+            
          };
+        
+        this.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        
         game.world.setBounds(0,0,4000,580);
         background = game.add.tileSprite(0, 0, 4000, 800, 'bg');
         floors = game.add.tileSprite(0, 548, 4000, game.width, 'floor');
@@ -88,6 +92,16 @@ var GameScreen = {
         mbls = game.add.group();
         mbls.enableBody = true;
         
+        entrances = game.add.group();
+        
+        this.cave = game.add.sprite(2542, 90, 'cave', entrances);
+        game.physics.arcade.enable(this.cave);
+        this.cave.body.allowGravity = false;
+        this.cave.body.immovable = true;
+        this.cave.height = 120;
+        this.cave.width = 120;
+        this.cave.visible = false;
+        
         this.grg = game.add.sprite(0, 10, 'gr');
         game.physics.arcade.enable(this.grg);
         this.grg.animations.add('walk');
@@ -99,7 +113,7 @@ var GameScreen = {
         this.bunny.animations.play('walk3', 4, true);
         this.bunny.scale.setTo(1, 1.5);
         
-        this.portal = game.add.sprite(3800, 400, 'portal');
+        this.portal = game.add.sprite(3800, 400, 'portal', entrances);
         game.physics.arcade.enable(this.portal);
         this.portal.animations.add('anim');
         this.portal.animations.play('anim', 3, true);
@@ -116,7 +130,7 @@ var GameScreen = {
         
         this.io = game.add.sprite(Math.random() * 1000, 380, 'pl');
         
-        this.la = game.add.sprite(Math.random() * 2500, 380, 'pl');
+        this.la = game.add.sprite(1600, 380, 'pl');
         
         this.ru = game.add.sprite(Math.random() * 3000, 380, 'pl');
         
@@ -198,6 +212,7 @@ var GameScreen = {
 
         game.physics.arcade.collide(this.platforms, this.grg);
         game.physics.arcade.collide(this.platforms, this.mro);
+        game.physics.arcade.collide(this.platforms, this.cave);
         
         game.camera.follow(this.grg);
         
@@ -214,6 +229,10 @@ var GameScreen = {
 //        game.physics.arcade.collide(mbls, this.grg, this.destroy, null, this);
         
         game.physics.arcade.collide(mbls, bullets, this.tall, null, this);
+        
+        if (this.grg.overlap(this.cave) && this.space.isDown) {
+            this.enterCave();
+        }
         
         if (this.wasd.right.isDown) {
             charaFacingRight = true;
@@ -336,7 +355,36 @@ var GameScreen = {
         this.pressed.body.immovable = true;
         this.pressed.body.allowGravity = false;
         this.pressed.scale.setTo(0.1, 0.1);
-        this.switch.kill()
+        this.switch.kill();
+        
+        this.platform7 = game.add.sprite(1900, 300, 'pl');
+        game.physics.arcade.enable(this.platform7);
+        this.platform7.body.immovable = true;
+        this.platform7.height = 30;
+        this.platform7.width = 200;
+        this.platform7.body.allowGravity = false;
+        this.platform7.body.checkCollision.down = false;
+        this.platforms.add(this.platform7);
+
+        this.platform8 = game.add.sprite(2200, 220, 'pl');
+        game.physics.arcade.enable(this.platform8);
+        this.platform8.body.immovable = true;
+        this.platform8.height = 30;
+        this.platform8.width = 200;
+        this.platform8.body.allowGravity = false;
+        this.platform8.body.checkCollision.down = false;
+        this.platforms.add(this.platform8);
+        
+        this.platform9 = game.add.sprite(2500, 180, 'pl');
+        game.physics.arcade.enable(this.platform9);
+        this.platform9.body.immovable = true;
+        this.platform9.height = 30;
+        this.platform9.width = 200;
+        this.platform9.body.allowGravity = false;
+        this.platform9.body.checkCollision.down = false;
+        this.platforms.add(this.platform9);
+        
+        this.cave.visible = true;
     },
     
     hit: function(chara, bullet) {
@@ -380,6 +428,10 @@ var GameScreen = {
     winGame: function() {
         //start the state 'GameScreen', as defined in the directory
         this.state.start('WinScreen');
-    }
+    },
+    
+    enterCave: function() {
+        this.state.start('CaveScreen');
+}
     
 };
