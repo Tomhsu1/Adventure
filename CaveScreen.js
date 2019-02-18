@@ -12,6 +12,7 @@ var CaveScreen = {
         game.load.image('caveFloor', 'assets/images/caveFloor.jpg');
         game.load.image('caveBackground', 'assets/images/caveBackground.png', 1000, 100);
         game.load.image('bullet', 'assets/images/bullet.png');
+        game.load.spritesheet('portal', 'assets/images/portal.png', 80, 81, 3);
     },
     
     create: function() {
@@ -30,9 +31,10 @@ var CaveScreen = {
             up: game.input.keyboard.addKey(Phaser.Keyboard.W),
             down: game.input.keyboard.addKey(Phaser.Keyboard.S),
             left: game.input.keyboard.addKey(Phaser.Keyboard.A),
-            right: game.input.keyboard.addKey(Phaser.Keyboard.D)
-            
+            right: game.input.keyboard.addKey(Phaser.Keyboard.D),
          };
+        
+        this.space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         
         this.jumpTimer = 0;
         
@@ -45,12 +47,20 @@ var CaveScreen = {
         this.grg.animations.add('walk');
         this.grg.animations.play('walk', 10, true);
         this.grg.body.collideWorldBounds = true;
+        
+        this.portal = game.add.sprite(3800, 365, 'portal');
+        game.physics.arcade.enable(this.portal);
+        this.portal.animations.add('anim');
+        this.portal.animations.play('anim', 3, true);
+        this.portal.scale.setTo(1.5, 1.5);
+        this.portal.body.allowGravity = false;
     },
     
     update: function() {
         time++;
         game.physics.arcade.collide(caveFloors, this.grg);
          game.physics.arcade.collide(caveFloors, bullets, this.hit, null, this);
+        game.physics.arcade.collide(caveFloors, this.portal);
         
         game.camera.follow(this.grg);
         
@@ -85,6 +95,10 @@ var CaveScreen = {
 //                }
 //            }
 //        }
+        
+        if (this.grg.overlap(this.portal) && this.space.isDown) {
+            this.returnToGame();
+        }
 
     },
     
@@ -113,5 +127,9 @@ var CaveScreen = {
     
     hit: function(caveFloors, bullets) {
         bullets.kill();
+    },
+    
+    returnToGame: function() {
+        this.state.start('GameScreen');
     },
 };
