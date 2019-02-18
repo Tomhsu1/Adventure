@@ -9,10 +9,9 @@ var background;
 var floors;
 var bullets;
 var mbls;
-var grgcount = 2;
-
+var grgcount = 5;
 var time = 60;
-
+var healthChange = 5;
 
 var GameScreen = {
     preload: function() {
@@ -29,6 +28,12 @@ var GameScreen = {
         game.load.image('switch', 'assets/images/p_switch.png', 25, 30);
         game.load.image('pressedSwitch', 'assets/images/pressed_switch.png', 25, 30);
         game.load.image('cave', 'assets/images/cave_entrance.png', 30, 30);
+        game.load.image('health6', 'assets/images/healthbarfull.png');
+        game.load.image('health5', 'assets/images/healthbar_5.png');
+        game.load.image('health4', 'assets/images/healthbar_4.png');
+        game.load.image('health3', 'assets/images/healthbar_3.png');
+        game.load.image('health2', 'assets/images/healthbar_2.png');
+        game.load.image('health1', 'assets/images/healthbar_1.png');
     },
     create: function() {
        
@@ -119,7 +124,7 @@ var GameScreen = {
         this.portal.animations.play('anim', 3, true);
         this.portal.scale.setTo(1.5, 1.5);
         
-        this.mro = game.add.sprite(1000, 400, 'mo');
+        this.mro = game.add.sprite(100, 200, 'mo');
         game.physics.arcade.enable(this.mro);
         this.mro.body.allowGravity = true;
         this.mro.scale.setTo(1, 2);
@@ -200,6 +205,46 @@ var GameScreen = {
         this.switch.body.immovable = true;
         this.switch.body.allowGravity = false;
         this.switch.scale.setTo(0.1, 0.1);
+        
+        this.healthBar6 = game.add.sprite(600, 30, 'health6');
+        game.physics.arcade.enable(this.healthBar6);
+        this.healthBar6.body.allowGravity = false;
+        this.healthBar6.body.immovable = true;
+        
+        this.healthBar5 = game.add.sprite(600, 30, 'health5');
+        game.physics.arcade.enable(this.healthBar5);
+        this.healthBar5.body.allowGravity = false;
+        this.healthBar5.body.immovable = true;
+        
+        this.healthBar4 = game.add.sprite(600, 30, 'health4');
+        game.physics.arcade.enable(this.healthBar4);
+        this.healthBar4.body.allowGravity = false;
+        this.healthBar4.body.immovable = true;
+        
+        this.healthBar3 = game.add.sprite(600, 30, 'health3');
+        game.physics.arcade.enable(this.healthBar3);
+        this.healthBar3.body.allowGravity = false;
+        this.healthBar3.body.immovable = true;
+        
+        this.healthBar2 = game.add.sprite(600, 30, 'health2');
+        game.physics.arcade.enable(this.healthBar2);
+        this.healthBar2.body.allowGravity = false;
+        this.healthBar2.body.immovable = true;
+        
+        this.healthBar1 = game.add.sprite(600, 30, 'health1');
+        game.physics.arcade.enable(this.healthBar1);
+        this.healthBar1.body.allowGravity = false;
+        this.healthBar1.body.immovable = true;
+        
+        this.healthBar = game.add.group();
+        
+        this.healthBar.add(this.healthBar6);
+        this.healthBar.add(this.healthBar5);
+        this.healthBar.add(this.healthBar4);
+        this.healthBar.add(this.healthBar3);
+        this.healthBar.add(this.healthBar2);
+        this.healthBar.add(this.healthBar1);
+        this.healthBar.scale.setTo(0.3, 0.3);
     },
     
     update: function() {
@@ -214,7 +259,7 @@ var GameScreen = {
         game.physics.arcade.collide(this.platforms, this.mro);
         game.physics.arcade.collide(this.platforms, this.cave);
         
-        game.camera.follow(this.grg);
+        game.camera.focusOnXY(this.grg.x, this.grg.y);
         
         game.physics.arcade.collide(pSwitch, bullets, this.activate, null, this);
         
@@ -228,10 +273,72 @@ var GameScreen = {
         
 //        game.physics.arcade.collide(mbls, this.grg, this.destroy, null, this);
         
+//        game.physics.arcade.collide(this.grg, this.portal, this.winGame, null, this);
+        
         game.physics.arcade.collide(mbls, bullets, this.tall, null, this);
+        
         
         if (this.grg.overlap(this.cave) && this.space.isDown) {
             this.enterCave();
+        }
+        
+        if (this.grg.overlap(this.portal) && this.space.isDown) {
+            this.winGame();
+        }
+        
+        
+        if (this.grg.body.x < 470) {
+            this.healthBar.x = 615;
+        } else if (this.grg.body.x > 3470) {
+            this.healthBar.x = 3620;
+        } else {
+            this.healthBar.x = this.grg.body.x + 145;
+        }
+        
+        if (healthChange == 5) {
+            this.healthBar1.visible = false;
+            this.healthBar2.visible = false;
+            this.healthBar3.visible = false;
+            this.healthBar4.visible = false;
+            this.healthBar5.visible = false;
+            this.healthBar6.visible = true;
+        } else if (healthChange == 4) {
+            this.healthBar1.visible = false;
+            this.healthBar2.visible = false;
+            this.healthBar3.visible = false;
+            this.healthBar4.visible = false;
+            this.healthBar5.visible = true;
+            this.healthBar6.visible = false;
+        } else if (healthChange == 3) {
+            this.healthBar1.visible = false;
+            this.healthBar2.visible = false;
+            this.healthBar3.visible = false;
+            this.healthBar4.visible = true;
+            this.healthBar5.visible = false;
+            this.healthBar6.visible = false;
+        } else if (healthChange == 2) {
+            this.healthBar1.visible = false;
+            this.healthBar2.visible = false;
+            this.healthBar3.visible = true;
+            this.healthBar4.visible = false;
+            this.healthBar5.visible = false;
+            this.healthBar6.visible = false;
+        } else if (healthChange == 1) {
+            this.healthBar1.visible = false;
+            this.healthBar2.visible = true;
+            this.healthBar3.visible = false;
+            this.healthBar4.visible = false;
+            this.healthBar5.visible = false;
+            this.healthBar6.visible = false;
+        } else if (healthChange == 0) {
+            this.healthBar1.visible = true;
+            this.healthBar2.visible = false;
+            this.healthBar3.visible = false;
+            this.healthBar4.visible = false;
+            this.healthBar5.visible = false;
+            this.healthBar6.visible = false;
+        } else {
+            this.healthBar.visible = false;
         }
         
         if (this.wasd.right.isDown) {
@@ -239,11 +346,16 @@ var GameScreen = {
            this.grg.body.velocity.x = 250;
             this.grg.anchor.setTo(.5,1);
             this.grg.scale.x = 1;
+            console.log(this.grg.body.x);
+            if (this.grg.body.x > 470) {
+            this.healthBar.x = this.healthBar.x - 2;
+            }
         } else if (this.wasd.left.isDown) { //if the left arrow is pressed, move to the left
             charaFacingRight = false;
             this.grg.anchor.setTo(.5,1);
             this.grg.scale.x = -1;
             this.grg.body.velocity.x = -250;
+            console.log(this.grg.body.x);
         } else if (this.wasd.down.isDown) { //if the down arrow is pressed, move downwards
             this.grg.body.velocity.y = 350;
             this.mro.body.velocity.y = 350;
@@ -251,7 +363,7 @@ var GameScreen = {
             this.grg.body.velocity.x = 0;
         }
         
-        game.physics.arcade.collide(this.grg, this.portal, this.winGame, null, this);
+
         
         if (this.mro.body.x <= game.world.width - 50 && isFacingRight) {
             this.mro.body.velocity.x = 400;//is going to right of screen going this fast
@@ -392,7 +504,8 @@ var GameScreen = {
             chara.kill();
             this.winGame();
             counter = 9;
-            grgcount = 2;
+            grgcount = 5;
+            healthChange = 5;
         } else {
             bullet.kill();
             counter--;
@@ -400,15 +513,18 @@ var GameScreen = {
     },
     
     destroy: function(grg, mbls) {
-        if (grgcount < 1) {
+        if (healthChange < 1) {
             grg.kill();
             //call endscreen
             this.endGame();
-            grgcount = 2;
+            grgcount = 5;
             counter = 9;
+            healthChange = 5;
         } else {
             mbls.kill();
             grgcount--;
+            healthChange--;
+            console.log('health left:'+(healthChange+1));
         }
     },
     
