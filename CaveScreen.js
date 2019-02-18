@@ -11,6 +11,7 @@ var CaveScreen = {
         game.load.spritesheet('gr', 'assets/images/guy_walk_spritesheet.png', 58, 87, 8);
         game.load.image('caveFloor', 'assets/images/caveFloor.jpg');
         game.load.image('caveBackground', 'assets/images/caveBackground.png', 1000, 100);
+        game.load.image('bullet', 'assets/images/bullet.png');
     },
     
     create: function() {
@@ -47,6 +48,7 @@ var CaveScreen = {
     },
     
     update: function() {
+        time++;
         game.physics.arcade.collide(caveFloors, this.grg);
         
         game.camera.follow(this.grg);
@@ -75,13 +77,13 @@ var CaveScreen = {
 
         }
         
-        for (var i = 0; i < 30; i++) {
-            for (var j = 0; j < bullets.length; j++) {
-                if (Phaser.Rectangle.intersects(this.platforms.getChildAt(i).getBounds(), bullets.getChildAt(j).getBounds())) {
-                    bullets.getChildAt(j).kill();    
-                }
-            }
-        }
+//        for (var i = 0; i < 30; i++) {
+//            for (var j = 0; j < bullets.length; j++) {
+//                if (Phaser.Rectangle.intersects(this.platforms.getChildAt(i).getBounds(), bullets.getChildAt(j).getBounds())) {
+//                    bullets.getChildAt(j).kill();    
+//                }
+//            }
+//        }
 
     },
     

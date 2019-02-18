@@ -347,7 +347,7 @@ var GameScreen = {
             this.grg.anchor.setTo(.5,1);
             this.grg.scale.x = 1;
             console.log(this.grg.body.x);
-            if (this.grg.body.x > 470) {
+            if (this.grg.body.x > 470 && this.grg.body.x < 3470) {
             this.healthBar.x = this.healthBar.x - 2;
             }
         } else if (this.wasd.left.isDown) { //if the left arrow is pressed, move to the left
