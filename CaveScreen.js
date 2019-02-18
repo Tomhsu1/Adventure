@@ -50,6 +50,7 @@ var CaveScreen = {
     update: function() {
         time++;
         game.physics.arcade.collide(caveFloors, this.grg);
+         game.physics.arcade.collide(caveFloors, bullets, this.hit, null, this);
         
         game.camera.follow(this.grg);
         
@@ -108,5 +109,9 @@ var CaveScreen = {
                 bullets.setAll('checkWorldBounds', true);
                 game.physics.arcade.moveToPointer(temp, 300);
         }
+    },
+    
+    hit: function(caveFloors, bullets) {
+        bullets.kill();
     },
 };

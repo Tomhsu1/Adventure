@@ -276,7 +276,8 @@ var GameScreen = {
 //        game.physics.arcade.collide(this.grg, this.portal, this.winGame, null, this);
         
         game.physics.arcade.collide(mbls, bullets, this.tall, null, this);
-        
+        game.physics.arcade.collide(bullets, floors, this.sliding, null, this);
+        game.physics.arcade.collide(mbls, floors, this.sliding2, null, this);
         
         if (this.grg.overlap(this.cave) && this.space.isDown) {
             this.enterCave();
@@ -507,7 +508,7 @@ var GameScreen = {
             grgcount = 5;
             healthChange = 5;
         } else {
-            bullet.kill();
+            bullets.kill();
             counter--;
         }
     },
@@ -531,6 +532,14 @@ var GameScreen = {
     tall: function(mbls, bullets) {
         mbls.kill();
         bullets.kill();
+    },
+    
+    sliding: function(floors, bullets) {
+        bullets.kill();
+    },
+    
+    sliding2: function(floors, mbls) {
+        mbls.kill();
     },
     
     //this method just start/change to another state call GameOverScreen
